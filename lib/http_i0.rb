@@ -19,11 +19,31 @@ while client = tcp_server.accept
   #prints below to sceen for debugging
   puts "Got this request:"
   puts request_lines.inspect
-
   #Response to requests.
   puts "Sending response."
   response = "<pre>" + request_lines.join("\n") + "</pre>"
-  output = "<html><head></head><body>Hello Asshole. Counting:#{counter} #{response}</body></html>"
+  verb = request_lines[0].split[0]
+  path = request_lines[0].split[1]
+  protocol = request_lines[0].split[2]
+  host = request_lines[1].split(":")[1].lstrip
+  port = request_lines[1].split(":")[2]
+  origin = host
+  accept = request_lines[-3].split[1]
+
+#binding.pry
+  diagnostics = <<END_OF_DIAGNOSTICS
+<pre>
+  Verb: #{verb}
+  Path: #{path}
+  Protocol: #{protocol}
+  Host: #{host}
+  Port: #{port}
+  Origin: #{origin}
+  Accept: #{accept}
+</pre>
+END_OF_DIAGNOSTICS
+
+  output = "<html><head></head><body>Hello Asshole. Counting:#{counter} #{response} #{diagnostics}</body></html>"
   headers = ["http/1.1 200 ok",
             "date: #{Time.now.strftime('%a, %e %b %Y %H:%M:%S %z')}",
             "server: ruby",
